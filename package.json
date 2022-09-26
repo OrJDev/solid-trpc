@@ -3,7 +3,7 @@
   "description": "SolidJS tRPC",
   "author": "OrJDev",
   "license": "MIT",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publishConfig": {
     "access": "public"
   },
