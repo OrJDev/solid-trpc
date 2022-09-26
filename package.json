@@ -1,0 +1,53 @@
+{
+  "name": "solid-trpc",
+  "description": "SolidJS tRPC",
+  "author": "OrJDev",
+  "license": "MIT",
+  "version": "0.0.2",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "solid": "./dist/index.jsx",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc && rollup -c && node scripts/cp",
+    "patch": "npm version patch --no-git-tag-version"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.13",
+    "@babel/preset-typescript": "^7.18.6",
+    "@rollup/plugin-babel": "5.3.1",
+    "@rollup/plugin-node-resolve": "13.3.0",
+    "@tanstack/query-core": "^4.6.1",
+    "@tanstack/solid-query": "^4.6.1",
+    "@trpc/client": "^9.27.2",
+    "@trpc/server": "^9.27.2",
+    "@types/node": "^18.7.14",
+    "babel-preset-solid": "^1.5.3",
+    "rollup": "^2.79.0",
+    "solid-js": "^1.5.3",
+    "typescript": "^4.8.2"
+  },
+  "peerDependencies": {
+    "@tanstack/query-core": "^4.6.1",
+    "@tanstack/solid-query": "^4.6.1",
+    "@trpc/client": "^9.12.0",
+    "@trpc/server": "^9.12.0",
+    "solid-js": "^1.5.3"
+  },
+  "keywords": [
+    "solidjs",
+    "trpc"
+  ]
+}
