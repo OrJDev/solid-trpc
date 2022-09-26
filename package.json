@@ -49,5 +49,13 @@
   "keywords": [
     "solidjs",
     "trpc"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OrJDev/solid-trpc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/OrJDev/solid-trpc/issues"
+  },
+  "homepage": "https://github.com/OrJDev/solid-trpc#readme"
 }
