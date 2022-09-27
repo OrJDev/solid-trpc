@@ -132,7 +132,7 @@ export function createSolidQueryHooks<TRouter extends AnyRouter>() {
       opts?.enabled !== false &&
       !ctx.queryClient.getQueryCache().find(pathAndInput())
     ) {
-      ctx.prefetchQuery(pathAndInput as any, opts as any);
+      ctx.prefetchQuery(pathAndInput(), opts as any);
     }
 
     return __createQuery(pathAndInput, () =>
@@ -178,21 +178,21 @@ export function createSolidQueryHooks<TRouter extends AnyRouter>() {
     >
   ): CreateInfiniteQueryResult<TQueryValues[TPath]["output"], TError> {
     const [path, input] = pathAndInput();
-    const { client, prefetchInfiniteQuery, queryClient } = useContext();
+    const ctx = useContext();
 
     if (
       typeof window === "undefined" &&
       opts?.enabled !== false &&
-      !queryClient.getQueryCache().find(pathAndInput())
+      !ctx.queryClient.getQueryCache().find(pathAndInput())
     ) {
-      prefetchInfiniteQuery(pathAndInput as any, opts as any);
+      ctx.prefetchInfiniteQuery(pathAndInput() as any, opts as any);
     }
 
     return __createInfiniteQuery(
       pathAndInput as any,
       ({ pageParam }) => {
         const actualInput = { ...((input as any) ?? {}), cursor: pageParam };
-        return (client as any).query(
+        return (ctx.client as any).query(
           ...getClientArgs([path, actualInput], opts)
         );
       },

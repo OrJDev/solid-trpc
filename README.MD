@@ -14,8 +14,8 @@ npm install solid-trpc @tanstack/solid-query
 
 ```ts
 // utils/trpc.ts
-import { IAppRouter } from "api/src/routers/_route"; // your trpc appRouter type
 import { createSolidQueryHooks } from "solid-trpc";
+import { IAppRouter } from "api/src/routers/_route"; // your trpc appRouter type
 
 export const trpc = createSolidQueryHooks<IAppRouter>();
 export const client = trpc.createClient({
@@ -52,7 +52,7 @@ export default App;
 ```tsx
 // pages/Home.tsx
 import { Component } from "solid-js";
-import { trpc } from "../../utils/trpc";
+import { trpc } from "../utils/trpc";
 
 interface IHomeProps {}
 
@@ -74,7 +74,7 @@ export default Home;
 ```tsx
 // pages/Home.tsx
 import { Component, onMount } from "solid-js";
-import { trpc } from "../../utils/trpc";
+import { trpc } from "../utils/trpc";
 
 interface IHomeProps {}
 
@@ -99,4 +99,12 @@ export default Home;
 
 - No SSR
 - Replace "use" with "create" (e.g. useQuery -> createQuery)
-- Query paths (key and input) are being treated as Solid Accessor (callback) instead of a string (eg: useQuery(["MyKey", {...}]) -> createQuery(()=> ["MyKey", {...}]))
+- Query paths (key and input) are being treated as Solid Accessor (callback):
+
+```ts
+//  instead of a string:
+useQuery(["MyKey", {...}]
+
+// it becomes a callback:
+createQuery(()=> ["MyKey", {...}]))
+```
