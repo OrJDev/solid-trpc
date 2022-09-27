@@ -1,5 +1,18 @@
 # SolidJS tRPC
 
+## What is different
+
+- Replace "use" with "create" (e.g. useQuery -> createQuery)
+- Query paths (key and input) are being treated as Solid Accessor (callback):
+
+```ts
+//  instead of a string:
+useQuery(["MyKey", {...}])
+
+// it becomes a callback:
+createQuery(()=> ["MyKey", {...}])
+```
+
 ## Getting Started
 
 I recommend using [Create JD App](https://github.com/OrJDev/create-jd-app) but if you want to create a project from scratch, you can follow the steps below:
@@ -93,18 +106,4 @@ const Home: Component<IHomeProps> = ({}) => {
 };
 
 export default Home;
-```
-
-## What is different
-
-- No SSR
-- Replace "use" with "create" (e.g. useQuery -> createQuery)
-- Query paths (key and input) are being treated as Solid Accessor (callback):
-
-```ts
-//  instead of a string:
-useQuery(["MyKey", {...}]
-
-// it becomes a callback:
-createQuery(()=> ["MyKey", {...}]))
 ```
