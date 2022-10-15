@@ -4,14 +4,16 @@ import {
   TRPCClientErrorLike,
   TRPCRequestOptions,
   createTRPCClient,
+  OperationContext,
 } from "@trpc/client";
-import type {
+import {
   AnyRouter,
   ProcedureRecord,
   inferHandlerInput,
   inferProcedureInput,
   inferProcedureOutput,
   inferSubscriptionOutput,
+  router,
 } from "@trpc/server";
 import {
   CreateInfiniteQueryOptions,
@@ -38,27 +40,23 @@ export type OutputWithCursor<TData, TCursor extends any = any> = {
   data: TData;
 };
 
-type OmitContext<T> = Omit<T, "context"> & {
-  context?: TRPCRequestOptions["context"];
-};
+type OmitContext<T> = Omit<T, "context"> & { context?: OperationContext };
 
 export interface CreateTRPCQueryOptions<TPath, TInput, TOutput, TData, TError>
   extends OmitContext<
-      CreateQueryOptions<TOutput, TError, TData, () => [TPath, TInput]>
-    >,
-    TRPCRequestOptions {}
+    CreateQueryOptions<TOutput, TError, TData, () => [TPath, TInput]>
+  > {}
 
 export interface CreateTRPCInfiniteQueryOptions<TPath, TInput, TOutput, TError>
   extends OmitContext<
-      CreateInfiniteQueryOptions<
-        TOutput,
-        TError,
-        TOutput,
-        TOutput,
-        () => [TPath, TInput]
-      >
-    >,
-    TRPCRequestOptions {}
+    CreateInfiniteQueryOptions<
+      TOutput,
+      TError,
+      TOutput,
+      TOutput,
+      () => [TPath, TInput]
+    >
+  > {}
 
 export interface CreateTRPCMutationOptions<
   TInput,
@@ -134,9 +132,10 @@ export function createSolidQueryHooks<TRouter extends AnyRouter>() {
     ) {
       ctx.prefetchQuery(pathAndInput(), opts as any);
     }
-
-    return __createQuery(pathAndInput, () =>
-      (ctx.client as any).query(...getClientArgs(pathAndInput(), opts))
+    return __createQuery(
+      pathAndInput,
+      () => (ctx.client as any).query(...getClientArgs(pathAndInput(), opts)),
+      opts as any
     );
   }
 
@@ -251,3 +250,19 @@ export function createSolidQueryHooks<TRouter extends AnyRouter>() {
 }
 
 export { default as TRPCProvider } from "./provider";
+
+// // type testing
+// const r = router().query("hello", {
+//   input: z.object({
+//     num: z.number(),
+//   }),
+//   resolve: ({ input }) => {
+//     return input.num;
+//   },
+// });
+
+// export type TRouter = typeof r;
+
+// const res = createSolidQueryHooks<TRouter>()
+
+// res.createQuery(()=> ['hello', {num: 1}])

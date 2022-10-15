@@ -18,7 +18,7 @@ import {
   RefetchQueryFilters,
   SetDataOptions,
 } from "@tanstack/solid-query";
-import { Updater } from "@tanstack/query-core";
+import { Updater } from "@tanstack/solid-query";
 
 interface TRPCFetchQueryOptions<TInput, TError, TOutput>
   extends FetchQueryOptions<TInput, TError, TOutput>,
