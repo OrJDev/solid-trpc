@@ -176,9 +176,7 @@ export function createSolidQueryHooks<TRouter extends AnyRouter>() {
       TError
     >
   ): CreateInfiniteQueryResult<TQueryValues[TPath]["output"], TError> {
-    const [path, input] = pathAndInput();
     const ctx = useContext();
-
     if (
       typeof window === "undefined" &&
       opts?.enabled !== false &&
@@ -190,9 +188,12 @@ export function createSolidQueryHooks<TRouter extends AnyRouter>() {
     return __createInfiniteQuery(
       pathAndInput as any,
       ({ pageParam }) => {
-        const actualInput = { ...((input as any) ?? {}), cursor: pageParam };
+        const actualInput = {
+          ...((pathAndInput()[1] as any) ?? {}),
+          cursor: pageParam,
+        };
         return (ctx.client as any).query(
-          ...getClientArgs([path, actualInput], opts)
+          ...getClientArgs([pathAndInput()[0], actualInput], opts)
         );
       },
       opts as any
