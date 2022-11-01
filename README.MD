@@ -1,5 +1,7 @@
 # SolidJS tRPC
 
+[If you are looking for tRPC v10 / RC check out the next branch](https://github.com/OrJDev/solid-trpc/tree/next)
+
 ## What is different
 
 - Replace "use" with "create" (e.g. useQuery -> createQuery)
