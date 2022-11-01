@@ -189,7 +189,7 @@ export type DecoratedProcedureUtilsRecord<TRouter extends AnyRouter> = {
 
 type AnyDecoratedProcedure = DecorateProcedure<any, any>;
 
-export type CreateReactUtilsProxy<
+export type CreateSolidUtilsProxy<
   TRouter extends AnyRouter,
   TSSRContext
 > = DecoratedProcedureUtilsRecord<TRouter> &
@@ -198,16 +198,16 @@ export type CreateReactUtilsProxy<
 /**
  * @internal
  */
-export function createReactQueryUtilsProxy<
+export function createSolidQueryUtilsProxy<
   TRouter extends AnyRouter,
   TSSRContext
 >(context: TRPCContextState<AnyRouter, unknown>) {
-  type CreateReactUtilsProxyReturnType = CreateReactUtilsProxy<
+  type CreateSolidUtilsProxyReturnType = CreateSolidUtilsProxy<
     TRouter,
     TSSRContext
   >;
 
-  return createFlatProxy<CreateReactUtilsProxyReturnType>((key) => {
+  return createFlatProxy<CreateSolidUtilsProxyReturnType>((key) => {
     const contextName = key as typeof contextProps[number];
     if (contextProps.includes(contextName)) {
       return context[contextName];

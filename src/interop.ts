@@ -3,19 +3,19 @@ import { AnyRouter } from "@trpc/server";
 import { CreateTRPCSolid, createHooksInternalProxy } from "./createTRPCSolid";
 import { CreateTRPCSolidOptions } from "./shared";
 import {
-  CreateReactQueryHooks,
+  CreateSolidQueryHooks,
   createHooksInternal,
 } from "./shared/hooks/createHooksInternal";
 
 /**
  * @deprecated use `createTRPCSolid` instead
  */
-export function createReactQueryHooks<
+export function createSolidQueryHooks<
   TRouter extends AnyRouter,
   TSSRContext = unknown
 >(
   opts?: CreateTRPCSolidOptions<TRouter>
-): CreateReactQueryHooks<TRouter, TSSRContext> & {
+): CreateSolidQueryHooks<TRouter, TSSRContext> & {
   proxy: CreateTRPCSolid<TRouter, TSSRContext>;
 } {
   const trpc = createHooksInternal<TRouter, TSSRContext>(opts);

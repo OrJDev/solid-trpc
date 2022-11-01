@@ -644,10 +644,10 @@ type fooType<TRouter extends AnyRouter, TSSRContext = unknown> = GnClass<
 >["fn"];
 
 /**
- * Infer the type of a `createReactQueryHooks` function
+ * Infer the type of a `createSolidQueryHooks` function
  * @internal
  */
-export type CreateReactQueryHooks<
+export type CreateSolidQueryHooks<
   TRouter extends AnyRouter,
   TSSRContext = unknown
 > = returnTypeInferer<fooType<TRouter, TSSRContext>>;

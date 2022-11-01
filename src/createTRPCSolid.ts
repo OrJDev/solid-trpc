@@ -12,13 +12,13 @@ import {
 import { inferObservableValue } from "@trpc/server/observable";
 import { createFlatProxy } from "@trpc/server/shared";
 import {
-  CreateReactUtilsProxy,
-  createReactProxyDecoration,
-  createReactQueryUtilsProxy,
+  CreateSolidUtilsProxy,
+  createSolidProxyDecoration,
+  createSolidQueryUtilsProxy,
 } from "./shared";
 import {
   CreateClient,
-  CreateReactQueryHooks,
+  CreateSolidQueryHooks,
   TRPCProvider,
   UseDehydratedState,
   UseTRPCInfiniteQueryOptions,
@@ -118,7 +118,7 @@ export type DecoratedProcedureRecord<
 };
 
 export type CreateTRPCSolid<TRouter extends AnyRouter, TSSRContext> = {
-  useContext(): CreateReactUtilsProxy<TRouter, TSSRContext>;
+  useContext(): CreateSolidUtilsProxy<TRouter, TSSRContext>;
   Provider: TRPCProvider<TRouter, TSSRContext>;
   createClient: CreateClient<TRouter>;
   useDehydratedState: UseDehydratedState<TRouter>;
@@ -130,7 +130,7 @@ export type CreateTRPCSolid<TRouter extends AnyRouter, TSSRContext> = {
 export function createHooksInternalProxy<
   TRouter extends AnyRouter,
   TSSRContext = unknown
->(trpc: CreateReactQueryHooks<TRouter, TSSRContext>) {
+>(trpc: CreateSolidQueryHooks<TRouter, TSSRContext>) {
   type CreateHooksInternalProxy = CreateTRPCSolid<TRouter, TSSRContext>;
 
   return createFlatProxy<CreateHooksInternalProxy>((key) => {
@@ -138,7 +138,7 @@ export function createHooksInternalProxy<
       return () => {
         const context = trpc.useContext();
         // create a stable reference of the utils context
-        return (createReactQueryUtilsProxy as any)(context as any);
+        return (createSolidQueryUtilsProxy as any)(context as any);
       };
     }
 
@@ -146,7 +146,7 @@ export function createHooksInternalProxy<
       return (trpc as any)[key];
     }
 
-    return createReactProxyDecoration(key as string, trpc);
+    return createSolidProxyDecoration(key as string, trpc);
   });
 }
 
