@@ -441,7 +441,7 @@ export function createHooksInternal<
     TContext
   > {
     const ctx = useContext();
-    const queryClient = useQueryClient();
+    const queryClient = useQueryClient({ context: SolidQueryContext });
 
     const hook = __useMutation(
       (input) => {
