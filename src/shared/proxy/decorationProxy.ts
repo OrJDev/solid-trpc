@@ -25,16 +25,9 @@ export function createSolidProxyDecoration<
     if (lastArg === "useMutation") {
       return (hooks as any)[lastArg](path, ...args);
     }
-    const [input, ...rest] = args;
     return (hooks as any)[lastArg](
-      () => getQueryKey(path, typeof input === "function" ? input() : input),
-      () => {
-        let p = {};
-        for (const r of rest) {
-          p = { ...p, ...(typeof r === "function" ? r() : r) };
-        }
-        return p;
-      }
+      () => getQueryKey(path, (args[0] as any)()),
+      args[1]
     );
   });
 }

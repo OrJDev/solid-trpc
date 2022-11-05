@@ -392,35 +392,32 @@ export function createHooksInternal<
       opts?.().enabled !== false &&
       !ctx.queryClient.getQueryCache().find(getArrayQueryKey(pathAndInput()))
     ) {
-      void ctx.prefetchQuery(pathAndInput(), opts as any);
+      void ctx.prefetchQuery(pathAndInput(), opts?.() as any);
     }
-    const ssrOpts = useSSRQueryOptionsIfNeeded(pathAndInput(), opts?.());
-    // request option should take priority over global
-    const shouldAbortOnUnmount =
+
+    const shouldAbortOnUnmount = () =>
       opts?.().trpc?.abortOnUnmount ?? ctx?.abortOnUnmount ?? false;
     const hook = __useQuery(
       () => getArrayQueryKey(pathAndInput()),
       (queryFunctionContext) => {
         const actualOpts = () => ({
-          ...ssrOpts,
+          ...opts?.(),
           trpc: {
-            ...ssrOpts?.trpc,
-            ...(shouldAbortOnUnmount
+            ...opts?.()?.trpc,
+            ...(shouldAbortOnUnmount()
               ? { signal: queryFunctionContext.signal }
               : {}),
           },
         });
-
         return (ctx.client as any).query(
           ...getClientArgs(pathAndInput(), actualOpts())
         );
       },
-      { context: SolidQueryContext, ...ssrOpts } as any
+      { context: SolidQueryContext, ...opts?.() } as any
     ) as UseTRPCQueryResult<TData, TError>;
     hook.trpc = useHookResult({
       path: pathAndInput()[0],
     });
-
     return hook;
   }
 
