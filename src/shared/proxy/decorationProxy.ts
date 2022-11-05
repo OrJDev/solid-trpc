@@ -28,7 +28,13 @@ export function createSolidProxyDecoration<
     const [input, ...rest] = args;
     return (hooks as any)[lastArg](
       () => getQueryKey(path, typeof input === "function" ? input() : input),
-      () => rest.map((arg) => (typeof arg === "function" ? arg() : arg))
+      () => {
+        let p = {};
+        for (const r of rest) {
+          p = { ...p, ...(typeof r === "function" ? r() : r) };
+        }
+        return p;
+      }
     );
   });
 }
