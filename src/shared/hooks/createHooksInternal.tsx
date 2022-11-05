@@ -372,8 +372,11 @@ export function createHooksInternal<
     TQueryFnData = TQueryValues[TPath]["output"],
     TData = TQueryValues[TPath]["output"]
   >(
-    pathAndInput: [path: TPath, ...args: inferHandlerInput<TQueries[TPath]>],
-    opts?: UseTRPCQueryOptions<
+    pathAndInput: () => [
+      path: TPath,
+      ...args: inferHandlerInput<TQueries[TPath]>
+    ],
+    opts?: () => UseTRPCQueryOptions<
       TPath,
       TQueryValues[TPath]["input"],
       TQueryFnData,
@@ -382,25 +385,23 @@ export function createHooksInternal<
     >
   ): UseTRPCQueryResult<TData, TError> {
     const ctx = useContext();
-
     if (
       typeof window === "undefined" &&
       ctx.ssrState() === "prepass" &&
-      opts?.trpc?.ssr !== false &&
-      opts?.enabled !== false &&
-      !ctx.queryClient.getQueryCache().find(getArrayQueryKey(pathAndInput))
+      opts?.().trpc?.ssr !== false &&
+      opts?.().enabled !== false &&
+      !ctx.queryClient.getQueryCache().find(getArrayQueryKey(pathAndInput()))
     ) {
-      void ctx.prefetchQuery(pathAndInput as any, opts as any);
+      void ctx.prefetchQuery(pathAndInput(), opts as any);
     }
-    const ssrOpts = useSSRQueryOptionsIfNeeded(pathAndInput, opts);
+    const ssrOpts = useSSRQueryOptionsIfNeeded(pathAndInput(), opts?.());
     // request option should take priority over global
     const shouldAbortOnUnmount =
-      opts?.trpc?.abortOnUnmount ?? ctx?.abortOnUnmount ?? false;
-
+      opts?.().trpc?.abortOnUnmount ?? ctx?.abortOnUnmount ?? false;
     const hook = __useQuery(
-      () => getArrayQueryKey(pathAndInput),
+      () => getArrayQueryKey(pathAndInput()),
       (queryFunctionContext) => {
-        const actualOpts = {
+        const actualOpts = () => ({
           ...ssrOpts,
           trpc: {
             ...ssrOpts?.trpc,
@@ -408,16 +409,16 @@ export function createHooksInternal<
               ? { signal: queryFunctionContext.signal }
               : {}),
           },
-        };
+        });
 
         return (ctx.client as any).query(
-          ...getClientArgs(pathAndInput, actualOpts)
+          ...getClientArgs(pathAndInput(), actualOpts())
         );
       },
       { context: SolidQueryContext, ...ssrOpts } as any
     ) as UseTRPCQueryResult<TData, TError>;
     hook.trpc = useHookResult({
-      path: pathAndInput[0],
+      path: pathAndInput()[0],
     });
 
     return hook;
@@ -428,7 +429,7 @@ export function createHooksInternal<
     TContext = unknown
   >(
     path: TPath | [TPath],
-    opts?: UseTRPCMutationOptions<
+    opts?: () => UseTRPCMutationOptions<
       TMutationValues[TPath]["input"],
       TError,
       TMutationValues[TPath]["output"],
@@ -448,14 +449,14 @@ export function createHooksInternal<
         const actualPath = Array.isArray(path) ? path[0] : path;
 
         return (ctx.client.mutation as any)(
-          ...getClientArgs([actualPath, input], opts)
+          ...getClientArgs([actualPath, input], opts?.())
         );
       },
       {
         context: SolidQueryContext,
-        ...opts,
+        ...opts?.(),
         onSuccess(...args) {
-          const originalFn = () => opts?.onSuccess?.(...args);
+          const originalFn = () => opts?.().onSuccess?.(...args);
           return mutationSuccessOverride({ originalFn, queryClient });
         },
       }
@@ -483,16 +484,16 @@ export function createHooksInternal<
     TPath extends keyof TSubscriptions & string,
     TOutput extends inferSubscriptionOutput<TRouter, TPath>
   >(
-    pathAndInput: [
+    pathAndInput: () => [
       path: TPath,
       ...args: inferHandlerInput<TSubscriptions[TPath]>
     ],
-    opts: UseTRPCSubscriptionOptions<
+    opts: () => UseTRPCSubscriptionOptions<
       inferObservableValue<inferProcedureOutput<TSubscriptions[TPath]>>,
       inferProcedureClientError<TSubscriptions[TPath]>
     >
   ) {
-    const enabled = opts?.enabled ?? true;
+    const enabled = opts?.().enabled ?? true;
     const ctx = useContext();
 
     return createEffect(() => {
@@ -501,29 +502,28 @@ export function createHooksInternal<
       }
       // noop
       (() => {
-        return hashQueryKey(pathAndInput);
+        return hashQueryKey(pathAndInput());
       })();
-      const [path, input] = pathAndInput;
       let isStopped = false;
       const subscription = ctx.client.subscription<
         TRouter["_def"]["subscriptions"],
         TPath,
         TOutput,
         inferProcedureInput<TRouter["_def"]["subscriptions"][TPath]>
-      >(path, (input ?? undefined) as any, {
+      >(pathAndInput()[0], (pathAndInput()[1] ?? undefined) as any, {
         onStarted: () => {
           if (!isStopped) {
-            opts.onStarted?.();
+            opts?.().onStarted?.();
           }
         },
         onData: (data) => {
           if (!isStopped) {
-            opts.onData(data);
+            opts().onData(data);
           }
         },
         onError: (err) => {
           if (!isStopped) {
-            opts.onError?.(err);
+            opts().onError?.(err);
           }
         },
       });
@@ -535,40 +535,39 @@ export function createHooksInternal<
   }
 
   function useInfiniteQuery<TPath extends TInfiniteQueryNames & string>(
-    pathAndInput: [
+    pathAndInput: () => [
       path: TPath,
       input: Omit<TQueryValues[TPath]["input"], "cursor">
     ],
-    opts?: UseTRPCInfiniteQueryOptions<
+    opts?: () => UseTRPCInfiniteQueryOptions<
       TPath,
       Omit<TQueryValues[TPath]["input"], "cursor">,
       TQueryValues[TPath]["output"],
       TError
     >
   ): UseTRPCInfiniteQueryResult<TQueryValues[TPath]["output"], TError> {
-    const [path, input] = pathAndInput;
     const ctx = useContext();
 
     if (
       typeof window === "undefined" &&
       ctx.ssrState() === "prepass" &&
-      opts?.trpc?.ssr !== false &&
-      opts?.enabled !== false &&
-      !ctx.queryClient.getQueryCache().find(getArrayQueryKey(pathAndInput))
+      opts?.()?.trpc?.ssr !== false &&
+      opts?.()?.enabled !== false &&
+      !ctx.queryClient.getQueryCache().find(getArrayQueryKey(pathAndInput()))
     ) {
       void ctx.prefetchInfiniteQuery(pathAndInput as any, opts as any);
     }
 
-    const ssrOpts = useSSRQueryOptionsIfNeeded(pathAndInput, opts);
+    const ssrOpts = useSSRQueryOptionsIfNeeded(pathAndInput(), opts?.());
 
     // request option should take priority over global
     const shouldAbortOnUnmount =
-      opts?.trpc?.abortOnUnmount ?? ctx?.abortOnUnmount ?? false;
+      opts?.()?.trpc?.abortOnUnmount ?? ctx?.abortOnUnmount ?? false;
 
     const hook = __useInfiniteQuery(
-      () => getArrayQueryKey(pathAndInput),
+      () => getArrayQueryKey(pathAndInput()),
       (queryFunctionContext) => {
-        const actualOpts = {
+        const actualOpts = () => ({
           ...ssrOpts,
           trpc: {
             ...ssrOpts?.trpc,
@@ -576,22 +575,22 @@ export function createHooksInternal<
               ? { signal: queryFunctionContext.signal }
               : {}),
           },
-        };
+        });
 
         const actualInput = {
-          ...((input as any) ?? {}),
+          ...((pathAndInput()[1] as any) ?? {}),
           cursor: queryFunctionContext.pageParam,
         };
 
         return (ctx.client as any).query(
-          ...getClientArgs([path, actualInput], actualOpts)
+          ...getClientArgs([pathAndInput()[0], actualInput], actualOpts())
         );
       },
       { context: SolidQueryContext, ...ssrOpts } as any
     ) as UseTRPCInfiniteQueryResult<TQueryValues[TPath]["output"], TError>;
 
     hook.trpc = useHookResult({
-      path,
+      path: pathAndInput()[0],
     });
     return hook;
   }

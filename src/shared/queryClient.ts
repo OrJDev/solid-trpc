@@ -3,7 +3,7 @@ import { QueryClient, QueryClientConfig } from "@tanstack/solid-query";
 /**
  * @internal
  */
-export type CreateTRPCReactQueryClientConfig =
+export type CreateTRPCSolidQueryClientConfig =
   | {
       queryClient?: QueryClient;
       queryClientConfig?: never;
@@ -16,5 +16,5 @@ export type CreateTRPCReactQueryClientConfig =
 /**
  * @internal
  */
-export const getQueryClient = (config: CreateTRPCReactQueryClientConfig) =>
+export const getQueryClient = (config: CreateTRPCSolidQueryClientConfig) =>
   config.queryClient ?? new QueryClient(config.queryClientConfig);

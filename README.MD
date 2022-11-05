@@ -50,3 +50,12 @@ const App: Component<IAppProps> = ({}) => {
 
 export default App;
 ```
+
+### Example
+
+```ts
+import { trpc } from "./utils/trpc";
+import { createSignal } from "solid-js";
+const [name, setName] = createSignal("");
+const res = trpc.queryName.useQuery(() => ({ name: name() })); // this will be called when name changes
+```
