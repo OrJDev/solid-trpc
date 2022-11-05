@@ -45,7 +45,7 @@ export type DecorateProcedure<
         TData = inferProcedureOutput<TProcedure>
       >(
         input: () => inferProcedureInput<TProcedure>,
-        opts?: () => UseTRPCQueryOptions<
+        opts?: UseTRPCQueryOptions<
           TPath,
           inferProcedureInput<TProcedure>,
           TQueryFnData,
@@ -60,7 +60,7 @@ export type DecorateProcedure<
             TData = inferProcedureOutput<TProcedure>
           >(
             input: () => Omit<inferProcedureInput<TProcedure>, "cursor">,
-            opts?: () => UseTRPCInfiniteQueryOptions<
+            opts?: UseTRPCInfiniteQueryOptions<
               TPath,
               inferProcedureInput<TProcedure>,
               TData,
@@ -75,7 +75,7 @@ export type DecorateProcedure<
   : TProcedure extends AnyMutationProcedure
   ? {
       useMutation: <TContext = unknown>(
-        opts?: () => UseTRPCMutationOptions<
+        opts?: UseTRPCMutationOptions<
           inferProcedureInput<TProcedure>,
           TRPCClientErrorLike<TProcedure>,
           inferProcedureOutput<TProcedure>,
@@ -92,7 +92,7 @@ export type DecorateProcedure<
   ? {
       useSubscription: (
         input: () => inferProcedureInput<TProcedure>,
-        opts?: () => UseTRPCSubscriptionOptions<
+        opts?: UseTRPCSubscriptionOptions<
           inferObservableValue<inferProcedureOutput<TProcedure>>,
           TRPCClientErrorLike<TProcedure>
         >

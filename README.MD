@@ -57,5 +57,24 @@ export default App;
 import { trpc } from "./utils/trpc";
 import { createSignal } from "solid-js";
 const [name, setName] = createSignal("");
-const res = trpc.queryName.useQuery(() => ({ name: name() })); // this will be called when name changes
+const res = trpc.queryName.useQuery(() => ({ name: name() })); // this will be called onMount and when name changes
 ```
+
+### Using Options
+
+If you are using the `enabled` property make sure you follow Solid Query rules:
+
+```ts
+const [enabled, setEnabled] = createSignal(false);
+const query = trpc.queryName.useQuery(() => "hey there", {
+  // ❌ passing a signal directly is not reactive
+  // enabled: enabled(),
+
+  // ✅ passing a function that returns a signal is reactive
+  get enabled() {
+    return enabled();
+  },
+});
+```
+
+And options could be passed to all hooks.
