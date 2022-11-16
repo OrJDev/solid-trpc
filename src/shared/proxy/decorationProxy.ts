@@ -26,7 +26,8 @@ export function createSolidProxyDecoration<
       return (hooks as any)[lastArg](path, ...args);
     }
     return (hooks as any)[lastArg](
-      () => getQueryKey(path, (args[0] as any)()),
+      () =>
+        getQueryKey(path, typeof args[0] === "function" ? args[0]() : args[0]),
       args[1]
     );
   });
