@@ -32,6 +32,9 @@ import {
 } from "./shared/hooks/createHooksInternal";
 import { CreateTRPCSolidOptions } from "./shared/types";
 
+export type FixProcedureInput<T> = T extends void | undefined
+  ? void | undefined
+  : () => T;
 /**
  * @internal
  */
@@ -44,7 +47,7 @@ export type DecorateProcedure<
         TQueryFnData = inferProcedureOutput<TProcedure>,
         TData = inferProcedureOutput<TProcedure>
       >(
-        input: () => inferProcedureInput<TProcedure>,
+        input: FixProcedureInput<inferProcedureInput<TProcedure>>,
         opts?: UseTRPCQueryOptions<
           TPath,
           inferProcedureInput<TProcedure>,
@@ -59,7 +62,9 @@ export type DecorateProcedure<
             _TQueryFnData = inferProcedureOutput<TProcedure>,
             TData = inferProcedureOutput<TProcedure>
           >(
-            input: () => Omit<inferProcedureInput<TProcedure>, "cursor">,
+            input: FixProcedureInput<
+              Omit<inferProcedureInput<TProcedure>, "cursor">
+            >,
             opts?: UseTRPCInfiniteQueryOptions<
               TPath,
               inferProcedureInput<TProcedure>,
@@ -91,7 +96,7 @@ export type DecorateProcedure<
   : TProcedure extends AnySubscriptionProcedure
   ? {
       useSubscription: (
-        input: () => inferProcedureInput<TProcedure>,
+        input: FixProcedureInput<inferProcedureInput<TProcedure>>,
         opts?: UseTRPCSubscriptionOptions<
           inferObservableValue<inferProcedureOutput<TProcedure>>,
           TRPCClientErrorLike<TProcedure>
