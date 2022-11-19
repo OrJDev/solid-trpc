@@ -179,14 +179,6 @@ export type UseTRPCMutationResult<TData, TError, TVariables, TContext> =
   CreateMutationResult<TData, TError, TVariables, TContext> & TRPCHookResult;
 
 /**
- * Makes a stable reference of the `trpc` prop
- */
-function useHookResult(value: TRPCHookResult["trpc"]): TRPCHookResult["trpc"] {
-  const ref = { current: value };
-  ref.current.path = value.path;
-  return ref.current;
-}
-/**
  * Create strongly typed react hooks
  * @internal
  */
@@ -398,7 +390,7 @@ export function createHooksInternal<
 
     const shouldAbortOnUnmount = () =>
       opts?.trpc?.abortOnUnmount ?? ctx?.abortOnUnmount ?? false;
-    const hook = __useQuery(
+    return __useQuery(
       () => getArrayQueryKey(pathAndInput()),
       (queryFunctionContext) => {
         const actualOpts = () => ({
@@ -414,12 +406,11 @@ export function createHooksInternal<
           ...getClientArgs(pathAndInput(), actualOpts())
         );
       },
-      opts as any
+      {
+        context: SolidQueryContext,
+        ...opts,
+      } as any
     ) as UseTRPCQueryResult<TData, TError>;
-    hook.trpc = useHookResult({
-      path: pathAndInput()[0],
-    });
-    return hook;
   }
 
   function useMutation<
@@ -442,7 +433,7 @@ export function createHooksInternal<
     const ctx = useContext();
     const queryClient = useQueryClient({ context: SolidQueryContext });
 
-    const hook = __useMutation(
+    return __useMutation(
       (input) => {
         const actualPath = Array.isArray(path) ? path[0] : path;
 
@@ -464,12 +455,6 @@ export function createHooksInternal<
       TMutationValues[TPath]["input"],
       TContext
     >;
-
-    hook.trpc = useHookResult({
-      path: Array.isArray(path) ? path[0] : path,
-    });
-
-    return hook;
   }
 
   /* istanbul ignore next */
@@ -561,7 +546,7 @@ export function createHooksInternal<
     const shouldAbortOnUnmount =
       opts?.trpc?.abortOnUnmount ?? ctx?.abortOnUnmount ?? false;
 
-    const hook = __useInfiniteQuery(
+    return __useInfiniteQuery(
       () => getArrayQueryKey(pathAndInput()),
       (queryFunctionContext) => {
         const actualOpts = () => ({
@@ -585,11 +570,6 @@ export function createHooksInternal<
       },
       { context: SolidQueryContext, ...ssrOpts } as any
     ) as UseTRPCInfiniteQueryResult<TQueryValues[TPath]["output"], TError>;
-
-    hook.trpc = useHookResult({
-      path: pathAndInput()[0],
-    });
-    return hook;
   }
   const useDehydratedState: UseDehydratedState<TRouter> = (
     client,
