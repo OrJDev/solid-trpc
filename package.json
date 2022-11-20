@@ -3,7 +3,7 @@
   "description": "SolidJS tRPC",
   "author": "OrJDev",
   "license": "MIT",
-  "version": "0.0.10-rc.1",
+  "version": "0.0.10-rc.2",
   "publishConfig": {
     "access": "public",
     "tag": "next"
@@ -40,8 +40,8 @@
   },
   "peerDependencies": {
     "@tanstack/solid-query": "^4.6.1",
-    "@trpc/client": "10.0.0-rc.2",
-    "@trpc/server": "10.0.0-rc.2",
+    "@trpc/client": "^10.0.0-rc.2",
+    "@trpc/server": "^10.0.0-rc.2",
     "solid-js": "^1.5.3"
   },
   "keywords": [
