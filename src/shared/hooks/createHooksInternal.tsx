@@ -1,6 +1,5 @@
 import {
   DehydratedState,
-  QueryClient,
   CreateInfiniteQueryOptions,
   CreateInfiniteQueryResult,
   CreateMutationOptions,
@@ -11,7 +10,6 @@ import {
   createMutation as __useMutation,
   createQuery as __useQuery,
   hashQueryKey,
-  useQueryClient,
   QueryClientProviderProps,
   QueryClientProvider,
 } from "@tanstack/solid-query";
@@ -50,7 +48,7 @@ import {
   TRPCContextState,
 } from "../../internals/context";
 import { getArrayQueryKey } from "../../internals/getArrayQueryKey";
-import { CreateTRPCSolidOptions, UseMutationOverride } from "../types";
+import { CreateTRPCSolidOptions } from "../types";
 
 export type OutputWithCursor<TData, TCursor = any> = {
   cursor: TCursor | null;
@@ -186,9 +184,9 @@ export function createHooksInternal<
   TRouter extends AnyRouter,
   TSSRContext = unknown
 >(config?: CreateTRPCSolidOptions<TRouter>) {
-  const mutationSuccessOverride: UseMutationOverride["onSuccess"] =
-    config?.unstable_overrides?.useMutation?.onSuccess ??
-    ((options) => options.originalFn());
+  // const mutationSuccessOverride: UseMutationOverride["onSuccess"] =
+  //   config?.unstable_overrides?.useMutation?.onSuccess ??
+  //   ((options) => options.originalFn());
 
   type TQueries = TRouter["_def"]["queries"];
   type TSubscriptions = TRouter["_def"]["subscriptions"];
@@ -208,9 +206,9 @@ export function createHooksInternal<
   };
 
   const Context = (config?.context ?? TRPCContext) as Context<ProviderContext>;
-  const SolidQueryContext = config?.solidQueryContext as Context<
-    QueryClient | undefined
-  >;
+  // const SolidQueryContext = config?.solidQueryContext as Context<
+  //   QueryClient | undefined
+  // >;
 
   const createClient: CreateClient<TRouter> = (opts) => {
     return createTRPCClient(opts);
@@ -406,10 +404,7 @@ export function createHooksInternal<
           ...getClientArgs(pathAndInput(), actualOpts())
         );
       },
-      {
-        context: SolidQueryContext,
-        ...opts,
-      } as any
+      opts as any
     ) as UseTRPCQueryResult<TData, TError>;
   }
 
@@ -431,25 +426,15 @@ export function createHooksInternal<
     TContext
   > {
     const ctx = useContext();
-    const queryClient = useQueryClient({ context: SolidQueryContext });
+    // const queryClient = useQueryClient({ context: SolidQueryContext });
 
-    return __useMutation(
-      (input) => {
-        const actualPath = Array.isArray(path) ? path[0] : path;
+    return __useMutation((input) => {
+      const actualPath = Array.isArray(path) ? path[0] : path;
 
-        return (ctx.client.mutation as any)(
-          ...getClientArgs([actualPath, input], opts)
-        );
-      },
-      {
-        context: SolidQueryContext,
-        ...opts,
-        onSuccess(...args) {
-          const originalFn = () => opts?.onSuccess?.(...args);
-          return mutationSuccessOverride({ originalFn, queryClient });
-        },
-      }
-    ) as UseTRPCMutationResult<
+      return (ctx.client.mutation as any)(
+        ...getClientArgs([actualPath, input], opts)
+      );
+    }, opts as any) as UseTRPCMutationResult<
       TMutationValues[TPath]["output"],
       TError,
       TMutationValues[TPath]["input"],
@@ -568,7 +553,7 @@ export function createHooksInternal<
           ...getClientArgs([pathAndInput()[0], actualInput], actualOpts())
         );
       },
-      { context: SolidQueryContext, ...ssrOpts } as any
+      ssrOpts as any
     ) as UseTRPCInfiniteQueryResult<TQueryValues[TPath]["output"], TError>;
   }
   const useDehydratedState: UseDehydratedState<TRouter> = (
