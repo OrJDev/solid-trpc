@@ -1,4 +1,4 @@
-# Solid tRPC - v10 - RC
+# Solid tRPC - v10
 
 ## Getting Started
 
@@ -33,34 +33,47 @@ export const queryClient = new QueryClient();
 ### TRPC Provider
 
 ```tsx
-// App.tsx
-import { Component } from "solid-js";
-import { client, trpc, queryClient } from "./utils/trpc"; // the client we created above
-import Home from "./pages/Home"; // page for instance
+// entry-client.tsx
+import { mount, StartClient } from "solid-start/entry-client";
+import { client, queryClient, trpc } from "./utils/trpc";
 
-interface IAppProps {}
-
-const App: Component<IAppProps> = ({}) => {
-  return (
+mount(
+  () => (
     <trpc.Provider client={client} queryClient={queryClient}>
-      <Home />
+        <StartClient />
     </trpc.Provider>
-  );
-};
-
-export default App;
+  ),
+  document
+);
 ```
 
 ### Example
 
 ```ts
+// routes/example.tsx
 import { trpc } from "./utils/trpc";
 import { createSignal } from "solid-js";
 const [name, setName] = createSignal("");
 const res = trpc.queryName.useQuery(() => ({ name: name() })); // this will be called onMount and when name changes
 ```
 
-### Using Options
+### Reactivity
+
+
+## Input
+
+Solid tRPC input is considered to be a Solid accessor, meaning that you are required to pass a callback and SQ will rerun the tRPC endpoint whenever the signal changes.
+
+```ts
+const [name, setName] = createSignal("John");
+trpc.example.hello.useQuery(name); // ✅
+trpc.example.hello.useQuery(name()); // ❌
+trpc.example.useQuery(()=> name().slice(1)); // ✅
+// or even
+trpc.example.useQuery(()=> "John"); // ✅ will be called once
+```
+
+## Enabled Property 
 
 If you are using the `enabled` property make sure you follow Solid Query rules:
 
@@ -76,5 +89,3 @@ const query = trpc.queryName.useQuery(() => "hey there", {
   },
 });
 ```
-
-And options could be passed to all hooks.
