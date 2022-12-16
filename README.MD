@@ -49,12 +49,17 @@ mount(
 
 ### Example
 
-```ts
+```tsx
 // routes/example.tsx
 import { trpc } from "./utils/trpc";
 import { createSignal } from "solid-js";
 const [name, setName] = createSignal("");
 const res = trpc.queryName.useQuery(() => ({ name: name() })); // this will be called onMount and when name changes
+
+export default function Exaple() {
+   return (
+        {...}
+     )
 ```
 
 ### Reactivity
