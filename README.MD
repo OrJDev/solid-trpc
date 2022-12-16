@@ -1,4 +1,4 @@
-# Solid tRPC - v10
+# Solid tRPC
 
 ## Getting Started
 
@@ -56,7 +56,7 @@ import { createSignal } from "solid-js";
 const [name, setName] = createSignal("");
 const res = trpc.queryName.useQuery(() => ({ name: name() })); // this will be called onMount and when name changes
 
-export default function Exaple() {
+export default function Example() {
    return (
         {...}
      )
