@@ -60,6 +60,7 @@ export default function Exaple() {
    return (
         {...}
      )
+}
 ```
 
 ### Reactivity
