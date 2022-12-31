@@ -143,5 +143,3 @@ const Footer = () => {
 }
 
 ```
-
-_Note: the official trpc docs use a different method for query invalidation : https://trpc.io/docs/v9/invalidateQueries_
