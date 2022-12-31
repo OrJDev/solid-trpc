@@ -84,18 +84,18 @@ trpc.example.useQuery(()=> "John"); // ✅ will be called once
 ## Output
 To use the output of the query, you must remember to **not** destructure elements. Doing so violates the reactivity of the query result. This principle is general to Solid, please read more here https://github.com/solidjs/solid/discussions/408#discussioncomment-628486.
 
-```ts
-const { data, refetch...} = trpc.example.hello.useQuery(name()); // ❌ data will be evaluated only once and not update
+```tsx
+const { data, refetch } = trpc.example.hello.useQuery(name()); // ❌ data will be evaluated only once and not update
 
-const Navbar = () => {
+const NavBar = () => {
   return <div>{data}</div>;
 }
 
----
+// valid
 
 const queryRes = trpc.example.hello.useQuery(name()); // ✅ 
 
-const Navbar = () => {
+const NavBar = () => {
   return <div>{queryRes.data}</div>;
 }
 
@@ -121,17 +121,17 @@ const query = trpc.queryName.useQuery(() => "hey there", {
 ## Query Invalidation
 To invalidate queries, please see the following example of using `utils` which come as part of the `trpc` object you created through `createTRPCSolid.`
 
-```ts
-// navbar.tsx
-const queryRes = trpc.example.hello.useQuery(name()); // ✅ this will refetch on invalidation in footer.tsx
+```tsx
+// NavBar.tsx
+const queryRes = trpc.example.hello.useQuery(name()); // ✅ this will refetch on invalidation in Footer.tsx
 
-const Navbar = () => {
+const NavBar = () => {
   return <div>{queryRes.data}</div>;
 }
 ```
 
-```ts
-// another file - footer.tsx
+```tsx
+// Footer.tsx
 const Footer = () => {
   const trpcUtils = trpc.useContext()
   
