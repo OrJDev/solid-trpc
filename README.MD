@@ -93,7 +93,7 @@ const Navbar = () => {
 
 ---
 
-const queryRes = trpc.example.hello.useQuery(name()); // ✅
+const queryRes = trpc.example.hello.useQuery(name()); // ✅ 
 
 const Navbar = () => {
   return <div>{queryRes.data}</div>;
@@ -123,7 +123,7 @@ To invalidate queries, please see the following example of using `utils` which c
 
 ```ts
 // navbar.tsx
-const queryRes = trpc.example.hello.useQuery(name()); // ✅
+const queryRes = trpc.example.hello.useQuery(name()); // ✅ this will refetch on invalidation in footer.tsx
 
 const Navbar = () => {
   return <div>{queryRes.data}</div>;
