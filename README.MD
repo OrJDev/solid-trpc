@@ -72,11 +72,33 @@ Solid tRPC input is considered to be a Solid accessor, meaning that you are requ
 
 ```ts
 const [name, setName] = createSignal("John");
+
 trpc.example.hello.useQuery(name); // ✅
 trpc.example.hello.useQuery(name()); // ❌
+
 trpc.example.useQuery(()=> name().slice(1)); // ✅
 // or even
 trpc.example.useQuery(()=> "John"); // ✅ will be called once
+```
+
+## Output
+To use the output of the query, you must remember to **not** destructure elements. Doing so violates the reactivity of the query result. This principle is general to Solid, please read more here https://github.com/solidjs/solid/discussions/408#discussioncomment-628486.
+
+```ts
+const { data, refetch...} = trpc.example.hello.useQuery(name()); // ❌ data will be evaluated only once and not update
+
+const Navbar = () => {
+  return <div>{data}</div>;
+}
+
+---
+
+const queryRes = trpc.example.hello.useQuery(name()); // ✅
+
+const Navbar = () => {
+  return <div>{queryRes.data}</div>;
+}
+
 ```
 
 ## Enabled Property 
@@ -95,3 +117,31 @@ const query = trpc.queryName.useQuery(() => "hey there", {
   },
 });
 ```
+
+## Query Invalidation
+To invalidate queries, please see the following example of using `utils` which come as part of the `trpc` object you created through `createTRPCSolid.`
+
+```ts
+// navbar.tsx
+const queryRes = trpc.example.hello.useQuery(name()); // ✅
+
+const Navbar = () => {
+  return <div>{queryRes.data}</div>;
+}
+```
+
+```ts
+// another file - footer.tsx
+const Footer = () => {
+  const trpcUtils = trpc.useContext()
+  
+  const sayHelloAgain = () => {
+    trpcUtils.example.hello.invalidate()
+  }
+  
+  return <button onClick={sayHelloAgain}>say hello again</div>;
+}
+
+```
+
+_Note: the official trpc docs use a different method for query invalidation : https://trpc.io/docs/v9/invalidateQueries_
