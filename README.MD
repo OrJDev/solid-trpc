@@ -1,5 +1,7 @@
 # Solid tRPC
 
+> ssr is labled under the `ssr` tag because it is using @adeora/solid-query instead of @tanstack/solid-query - It is planned to be released under the tanstack org on version 5. Check out the [ssr](https://github.com/OrJDev/solid-trpc/tree/ssr) branch
+
 ## Getting Started
 
 I recommend using [Create JD App](https://github.com/OrJDev/create-jd-app) but if you want to create a project from scratch, you can follow the steps below:
