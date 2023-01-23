@@ -1,0 +1,63 @@
+{
+  "name": "solid-trpc",
+  "description": "tRPC adapter for SolidJS",
+  "author": "OrJDev",
+  "license": "MIT",
+  "version": "0.1.0-sssr.1",
+  "publishConfig": {
+    "access": "public",
+    "tag": "start-ssr"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p . && rollup -c"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.13",
+    "@babel/preset-typescript": "^7.18.6",
+    "@rollup/plugin-babel": "5.3.1",
+    "@rollup/plugin-node-resolve": "13.3.0",
+    "@adeora/solid-query": "^0.12.0",
+    "@trpc/client": "10.0.0-rc.2",
+    "@trpc/server": "10.0.0-rc.2",
+    "@types/node": "^18.7.14",
+    "babel-preset-solid": "^1.5.3",
+    "rollup": "^2.79.0",
+    "solid-js": "^1.5.3",
+    "typescript": "^4.8.2",
+    "solid-start": "^0.2.1"
+  },
+  "peerDependencies": {
+    "@adeora/solid-query": "~0.9.0 || ~0.12.0",
+    "@trpc/client": "^10.0.0-rc.2",
+    "@trpc/server": "^10.0.0-rc.2",
+    "solid-js": "^1.5.3",
+    "solid-start": "^0.2.1"
+  },
+  "keywords": [
+    "SolidJS",
+    "SolidStart",
+    "tRPC",
+    "JD"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OrJDev/solid-trpc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/OrJDev/solid-trpc/issues"
+  },
+  "homepage": "https://github.com/OrJDev/solid-trpc#readme"
+}
