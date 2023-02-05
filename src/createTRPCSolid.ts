@@ -69,7 +69,7 @@ export type DecorateProcedure<
             input: FixProcedureInput<
               Omit<inferProcedureInput<TProcedure>, "cursor">
             >,
-            opts?: () => UseTRPCInfiniteQueryOptions<
+            opts?: UseTRPCInfiniteQueryOptions<
               TPath,
               inferProcedureInput<TProcedure>,
               TData,

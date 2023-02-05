@@ -9,7 +9,6 @@ import {
   createInfiniteQuery as __useInfiniteQuery,
   createMutation as __useMutation,
   createQuery as __useQuery,
-  hashQueryKey,
   type QueryClientProviderProps,
   QueryClientProvider,
   type QueryClient,
@@ -38,6 +37,7 @@ import {
   mergeProps,
   onCleanup,
   useContext as __useContext,
+  on,
 } from "solid-js";
 import { isServer } from "solid-js/web";
 import { useRequest } from "solid-start/server";
@@ -185,69 +185,68 @@ export function createHooksInternal<TRouter extends AnyRouter>(
           abortOnUnmount,
           queryClient,
           fetchQuery: (pathAndInput, opts) => {
-            return queryClient.fetchQuery(
-              getArrayQueryKey(pathAndInput),
-              () =>
+            return queryClient.fetchQuery({
+              queryKey: getArrayQueryKey(pathAndInput),
+              queryFn: () =>
                 (createTRPCClient(config?.config(event) as any) as any).query(
                   ...getClientArgs(pathAndInput, opts)
                 ),
-              opts
-            );
+              ...opts,
+            });
           },
           fetchInfiniteQuery: (pathAndInput, opts) => {
-            return queryClient.fetchInfiniteQuery(
-              getArrayQueryKey(pathAndInput),
-              ({ pageParam }) => {
+            return queryClient.fetchInfiniteQuery({
+              queryKey: getArrayQueryKey(pathAndInput),
+              queryFn: ({ pageParam }) => {
                 const [path, input] = pathAndInput;
                 const actualInput = { ...(input as any), cursor: pageParam };
                 return (
                   createTRPCClient(config?.config(event) as any) as any
                 ).query(...getClientArgs([path, actualInput], opts));
               },
-              opts
-            );
+              ...opts,
+            });
           },
 
           prefetchQuery: (pathAndInput, opts) => {
-            return queryClient.prefetchQuery(
-              getArrayQueryKey(pathAndInput),
-              () =>
+            return queryClient.prefetchQuery({
+              queryKey: getArrayQueryKey(pathAndInput),
+              queryFn: () =>
                 (createTRPCClient(config?.config(event) as any) as any).query(
                   ...getClientArgs(pathAndInput, opts)
                 ),
-              opts
-            );
+            });
           },
           prefetchInfiniteQuery: (pathAndInput, opts) => {
-            return queryClient.prefetchInfiniteQuery(
-              getArrayQueryKey(pathAndInput),
-              ({ pageParam }) => {
+            return queryClient.prefetchInfiniteQuery({
+              queryKey: getArrayQueryKey(pathAndInput),
+              queryFn: ({ pageParam }) => {
                 const [path, input] = pathAndInput;
                 const actualInput = { ...(input as any), cursor: pageParam };
                 return (
                   createTRPCClient(config?.config(event) as any) as any
                 ).query(...getClientArgs([path, actualInput], opts));
               },
-              opts
-            );
+            });
           },
           invalidateQueries: (...args: any[]) => {
             const [queryKey, ...rest] = args;
-            return queryClient.invalidateQueries(
-              getArrayQueryKey(queryKey),
-              ...rest
-            );
+            return queryClient.invalidateQueries({
+              queryKey: getArrayQueryKey(queryKey),
+              ...rest,
+            });
           },
           refetchQueries: (...args: any[]) => {
             const [queryKey, ...rest] = args;
-
-            return queryClient.refetchQueries(
-              getArrayQueryKey(queryKey),
-              ...rest
-            );
+            return queryClient.refetchQueries({
+              queryKey: getArrayQueryKey(queryKey),
+              ...rest,
+            });
           },
           cancelQuery: (pathAndInput) => {
-            return queryClient.cancelQueries(getArrayQueryKey(pathAndInput));
+            return queryClient.cancelQueries({
+              queryKey: getArrayQueryKey(pathAndInput),
+            });
           },
           setQueryData: (...args) => {
             const [queryKey, ...rest] = args;
@@ -334,7 +333,7 @@ export function createHooksInternal<TRouter extends AnyRouter>(
     TContext = unknown
   >(
     path: TPath | [TPath],
-    opts?: UseTRPCMutationOptions<
+    opts?: () => UseTRPCMutationOptions<
       TMutationValues[TPath]["input"],
       TError,
       TMutationValues[TPath]["output"],
@@ -382,50 +381,51 @@ export function createHooksInternal<TRouter extends AnyRouter>(
       path: TPath,
       ...args: inferHandlerInput<TSubscriptions[TPath]>
     ],
-    opts: UseTRPCSubscriptionOptions<
+    opts: () => UseTRPCSubscriptionOptions<
       inferObservableValue<inferProcedureOutput<TSubscriptions[TPath]>>,
       inferProcedureClientError<TSubscriptions[TPath]>
     >
   ) {
-    return createEffect(() => {
-      if (!(opts.enabled ?? true)) {
-        return;
-      }
-      // noop
-      (() => {
-        return hashQueryKey(pathAndInput());
-      })();
-      let isStopped = false;
-      const event = isServer ? useRequest() : undefined;
-      const subscription = createTRPCClient(
-        config?.config(event) as any
-      ).subscription<
-        TRouter["_def"]["subscriptions"],
-        TPath,
-        TOutput,
-        inferProcedureInput<TRouter["_def"]["subscriptions"][TPath]>
-      >(pathAndInput()[0], (pathAndInput()[1] ?? undefined) as any, {
-        onStarted: () => {
-          if (!isStopped) {
-            opts?.onStarted?.();
+    return createEffect(
+      on(
+        () => [pathAndInput(), opts?.()],
+        () => {
+          if (!(opts().enabled ?? true)) {
+            return;
           }
-        },
-        onData: (data) => {
-          if (!isStopped) {
-            opts?.onData(data);
-          }
-        },
-        onError: (err) => {
-          if (!isStopped) {
-            opts?.onError?.(err);
-          }
-        },
-      });
-      onCleanup(() => {
-        isStopped = true;
-        subscription.unsubscribe();
-      });
-    });
+          let isStopped = false;
+          const event = isServer ? useRequest() : undefined;
+          const subscription = createTRPCClient(
+            config?.config(event) as any
+          ).subscription<
+            TRouter["_def"]["subscriptions"],
+            TPath,
+            TOutput,
+            inferProcedureInput<TRouter["_def"]["subscriptions"][TPath]>
+          >(pathAndInput()[0], (pathAndInput()[1] ?? undefined) as any, {
+            onStarted: () => {
+              if (!isStopped) {
+                opts?.()?.onStarted?.();
+              }
+            },
+            onData: (data) => {
+              if (!isStopped) {
+                opts?.()?.onData(data);
+              }
+            },
+            onError: (err) => {
+              if (!isStopped) {
+                opts?.()?.onError?.(err);
+              }
+            },
+          });
+          onCleanup(() => {
+            isStopped = true;
+            subscription.unsubscribe();
+          });
+        }
+      )
+    );
   }
 
   function useInfiniteQuery<TPath extends TInfiniteQueryNames & string>(
