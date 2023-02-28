@@ -3,7 +3,7 @@
 ### Install
 
 ```bash
-npm install solid-trpc@start-ssr @adeora/solid-query@latest
+npm install solid-trpc@start-ssr @tanstack/solid-query@alpha
 ```
 
 ### Usage
@@ -12,7 +12,7 @@ npm install solid-trpc@start-ssr @adeora/solid-query@latest
 
 ```ts
 // utils/trpc.ts
-import { QueryClient } from "@adeora/solid-query";
+import { QueryClient } from "@tanstack/solid-query";
 import type { IAppRouter } from "~/server/trpc/router/_app";
 import { createTRPCSolidStart } from "solid-trpc";
 import { httpBatchLink } from "@trpc/client";

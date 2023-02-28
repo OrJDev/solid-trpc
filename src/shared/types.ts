@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { type QueryClient } from "@adeora/solid-query";
+import { type QueryClient } from "@tanstack/solid-query";
 import { type CreateTRPCClientOptions } from "@trpc/client";
 import { type AnyRouter, type MaybePromise } from "@trpc/server";
 import type Solid from "solid-js";

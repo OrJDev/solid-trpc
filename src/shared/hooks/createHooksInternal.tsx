@@ -12,7 +12,7 @@ import {
   type QueryClientProviderProps,
   QueryClientProvider,
   type QueryClient,
-} from "@adeora/solid-query";
+} from "@tanstack/solid-query";
 import {
   type CreateTRPCClientOptions,
   type TRPCClient,
@@ -220,6 +220,7 @@ export function createHooksInternal<TRouter extends AnyRouter>(
           prefetchInfiniteQuery: (pathAndInput, opts) => {
             return queryClient.prefetchInfiniteQuery({
               queryKey: getArrayQueryKey(pathAndInput),
+              defaultPageParam: undefined,
               queryFn: ({ pageParam }) => {
                 const [path, input] = pathAndInput;
                 const actualInput = { ...(input as any), cursor: pageParam };

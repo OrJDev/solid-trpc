@@ -11,7 +11,7 @@ import type {
   RefetchQueryFilters,
   SetDataOptions,
   Updater,
-} from "@adeora/solid-query";
+} from "@tanstack/solid-query";
 import type { TRPCClientError, TRPCRequestOptions } from "@trpc/client";
 import type {
   AnyRouter,

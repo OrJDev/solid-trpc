@@ -8,7 +8,7 @@ import type {
   RefetchQueryFilters,
   SetDataOptions,
   Updater,
-} from "@adeora/solid-query";
+} from "@tanstack/solid-query";
 import { type TRPCClientError } from "@trpc/client";
 import type {
   AnyQueryProcedure,

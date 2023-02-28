@@ -2,7 +2,7 @@ import {
   type QueryKey,
   type SolidQueryOptions,
   type SolidInfiniteQueryOptions,
-} from "@adeora/solid-query";
+} from "@tanstack/solid-query";
 import { type TRPCRequestOptions } from "@trpc/client";
 
 export interface TRPCUseQueryBaseOptions {

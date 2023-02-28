@@ -1,4 +1,4 @@
-import { QueryClient, type QueryClientConfig } from "@adeora/solid-query";
+import { QueryClient, type QueryClientConfig } from "@tanstack/solid-query";
 
 /**
  * @internal
