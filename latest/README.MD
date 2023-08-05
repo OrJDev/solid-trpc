@@ -7,7 +7,7 @@ I recommend using [Create JD App](https://github.com/OrJDev/create-jd-app) but i
 ### Installation
 
 ```bash
-npm install @trpc/client@next @trpc/server@next solid-trpc@next @tanstack/solid-query@alpha
+npm install @trpc/client@next @trpc/server@next solid-trpc@next @tanstack/solid-query@beta
 ```
 
 ### Creating A Client

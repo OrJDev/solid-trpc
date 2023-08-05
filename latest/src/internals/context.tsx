@@ -29,9 +29,8 @@ export interface TRPCFetchQueryOptions<TInput, TError, TOutput>
   extends FetchQueryOptions<TInput, TError, TOutput>,
     TRPCRequestOptions {}
 
-export interface TRPCFetchInfiniteQueryOptions<TInput, TError, TOutput>
-  extends FetchInfiniteQueryOptions<TInput, TError, TOutput>,
-    TRPCRequestOptions {}
+export type TRPCFetchInfiniteQueryOptions<TInput, TError, TOutput> =
+  FetchInfiniteQueryOptions<TInput, TError, TOutput> & TRPCRequestOptions;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface ProxyTRPCContextProps<TRouter extends AnyRouter> {
