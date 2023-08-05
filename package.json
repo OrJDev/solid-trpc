@@ -3,7 +3,7 @@
   "description": "tRPC adapter for SolidJS",
   "author": "OrJDev",
   "license": "MIT",
-  "version": "0.1.0-sssr.7",
+  "version": "0.1.0-sssr.8",
   "publishConfig": {
     "access": "public",
     "tag": "start-ssr"
@@ -26,7 +26,7 @@
     "build": "tsc -p . && rollup -c"
   },
   "devDependencies": {
-    "@tanstack/solid-query": "^5.0.0-alpha.0",
+    "@tanstack/solid-query": "^5.0.0-beta.15",
     "@babel/core": "^7.18.13",
     "@babel/preset-typescript": "^7.18.6",
     "@rollup/plugin-babel": "5.3.1",
@@ -42,7 +42,7 @@
     "typescript": "^4.8.2"
   },
   "peerDependencies": {
-    "@tanstack/solid-query": "^5.0.0-alpha.0",
+    "@tanstack/solid-query": "^5.0.0-beta.15",
     "@trpc/client": "^10.0.0-rc.2",
     "@trpc/server": "^10.0.0-rc.2",
     "solid-js": "^1.5.3",

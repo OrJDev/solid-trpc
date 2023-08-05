@@ -3,7 +3,7 @@
 ### Install
 
 ```bash
-npm install solid-trpc@start-ssr @tanstack/solid-query@alpha
+npm install solid-trpc@start-ssr @tanstack/solid-query@beta
 ```
 
 ### Usage
