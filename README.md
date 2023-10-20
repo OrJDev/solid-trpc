@@ -1,5 +1,7 @@
 > recommended to use [Create JD App](https://github.com/orjdev/create-jd-app)
 
+> Moved to [Here](https://mediakit-taupe.vercel.app/trpc/install)
+
 ### Install
 
 ```bash
